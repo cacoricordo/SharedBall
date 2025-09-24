@@ -499,14 +499,14 @@
     }); 
         // Enter Fullscreen
         document.getElementById('fullscreen-overlay').addEventListener('click', async function() {
-            const el = document.documentElement;
+            const so = document.documentElement;
             // Try fullscreen
-            if (el.requestFullscreen) {
-                await el.requestFullscreen();
-            } else if (el.webkitRequestFullscreen) { /* Safari */
-                await el.webkitRequestFullscreen();
-            } else if (el.msRequestFullscreen) { /* IE11 */
-                await el.msRequestFullscreen();
+            if (so.requestFullscreen) {
+                await so.requestFullscreen();
+            } else if (so.webkitRequestFullscreen) { /* Safari */
+                await so.webkitRequestFullscreen();
+            } else if (so.msRequestFullscreen) { /* IE11 */
+                await so.msRequestFullscreen();
             }
             // Attempt to lock orientation to landscape
             if (screen.orientation && screen.orientation.lock) {
@@ -594,7 +594,7 @@
         const dragState = {};
 
         for (let i = 1; i <= 24; i++) {
-            const el = document.getElementById('circle' + i);
+            const so = document.getElementById('circle' + i);
             circles[i] = so;
             dragState[i] = {
                 dragging: false,
