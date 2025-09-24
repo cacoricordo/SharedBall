@@ -4,79 +4,144 @@
     <title>Draggable Circle Conference</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
-        #circle {
-            width: 80px; height: 80px;
+        .circle {
+            width: 26px; height: 26px;
             background: #33aaff; border-radius: 50%;
-            position: absolute; left: 200px; top: 200px;
+            position: absolute;
             cursor: grab;
             touch-action: none;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #fff;
+            font-weight: bold;
+            font-family: sans-serif;
+            font-size: 14px;
+            user-select: none;
         }
+        #circle1 { left: 100px; top: 100px; background: #ff33aa; }
+        #circle2 { left: 160px; top: 100px; background: #33ff88; }
+        #circle3 { left: 220px; top: 100px; background: #33ff88; }
+        #circle4 { left: 280px; top: 100px; background: #33ff88; }
+        #circle5 { left: 340px; top: 100px; background: #33ff88; }
+        #circle6 { left: 100px; top: 160px; background: #33ff88; }
+        #circle7 { left: 160px; top: 160px; background: #33ff88; }
+        #circle8 { left: 220px; top: 160px; background: #33ff88; }
+        #circle9 { left: 280px; top: 160px; background: #33ff88; }
+        #circle10 { left: 340px; top: 160px; background: #33ff88; }
+        #circle11 { left: 400px; top: 130px; background: #33ff88; }
         body { margin: 0; overflow: hidden; }
     </style>
 </head>
 <body>
-    <div id="circle"></div>
+    <div id="circle1" class="circle">1</div>
+    <div id="circle2" class="circle">2</div>
+    <div id="circle3" class="circle">3</div>
+    <div id="circle4" class="circle">4</div>
+    <div id="circle5" class="circle">5</div>
+    <div id="circle6" class="circle">6</div>
+    <div id="circle7" class="circle">7</div>
+    <div id="circle8" class="circle">8</div>
+    <div id="circle9" class="circle">9</div>
+    <div id="circle10" class="circle">10</div>
+    <div id="circle11" class="circle">11</div>
     <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
     <script>
-        const socket = io('https://sharedball.onrender.com'); 
-        const circle = document.getElementById('circle');
-        let dragging = false, offsetX = 0, offsetY = 0;
+        const socket = io('https://sharedball.onrender.com');
 
-        function moveCircle(x, y) {
-            circle.style.left = x + 'px';
-            circle.style.top = y + 'px';
+        // Store state for all circles
+        const circles = {};
+        const dragState = {};
+
+        for (let i = 1; i <= 11; i++) {
+            const el = document.getElementById('circle' + i);
+            circles[i] = el;
+            dragState[i] = {
+                dragging: false,
+                offsetX: 0,
+                offsetY: 0,
+                lastReceived: 0
+            };
+
+            // Mouse events
+            el.addEventListener('mousedown', (e) => {
+                dragState[i].dragging = true;
+                dragState[i].offsetX = e.offsetX;
+                dragState[i].offsetY = e.offsetY;
+                dragState[i].active = true;
+                dragState[i].touch = false;
+                window.activeCircleId = i;
+            });
+
+            // Touch events
+            el.addEventListener('touchstart', (e) => {
+                dragState[i].dragging = true;
+                const touch = e.touches[0];
+                const rect = el.getBoundingClientRect();
+                dragState[i].offsetX = touch.clientX - rect.left;
+                dragState[i].offsetY = touch.clientY - rect.top;
+                dragState[i].active = true;
+                dragState[i].touch = true;
+                window.activeCircleId = i;
+                e.preventDefault();
+            }, { passive: false });
         }
 
-        // For out-of-order fix
-        let lastReceived = 0;
-
-        // Mouse events
-        circle.addEventListener('mousedown', (e) => {
-            dragging = true;
-            offsetX = e.offsetX;
-            offsetY = e.offsetY;
-        });
-
+        // Mouse move
         document.addEventListener('mousemove', (e) => {
-            if (dragging) {
-                let x = e.clientX - offsetX;
-                let y = e.clientY - offsetY;
-                let ts = Date.now();
-                moveCircle(x, y);
-                socket.emit('move_circle', {x, y, ts});
+            for (let i = 1; i <= 11; i++) {
+                if (dragState[i].dragging && !dragState[i].touch && window.activeCircleId === i) {
+                    let x = e.clientX - dragState[i].offsetX;
+                    let y = e.clientY - dragState[i].offsetY;
+                    let ts = Date.now();
+                    circles[i].style.left = x + 'px';
+                    circles[i].style.top = y + 'px';
+                    socket.emit('move_circle', { x, y, ts, id: i });
+                }
             }
         });
 
-        document.addEventListener('mouseup', () => dragging = false);
-
-        // Touch events
-        circle.addEventListener('touchstart', (e) => {
-            dragging = true;
-            const touch = e.touches[0];
-            const rect = circle.getBoundingClientRect();
-            offsetX = touch.clientX - rect.left;
-            offsetY = touch.clientY - rect.top;
-            e.preventDefault();
-        }, {passive: false});
-
-        document.addEventListener('touchmove', (e) => {
-            if (dragging) {
-                const touch = e.touches[0];
-                let x = touch.clientX - offsetX;
-                let y = touch.clientY - offsetY;
-                let ts = Date.now();
-                moveCircle(x, y);
-                socket.emit('move_circle', {x, y, ts});
-                e.preventDefault();
+        // Mouse up
+        document.addEventListener('mouseup', () => {
+            for (let i = 1; i <= 11; i++) {
+                dragState[i].dragging = false;
+                dragState[i].active = false;
             }
-        }, {passive: false});
+            window.activeCircleId = undefined;
+        });
 
-        document.addEventListener('touchend', () => dragging = false);
+        // Touch move
+        document.addEventListener('touchmove', (e) => {
+            for (let i = 1; i <= 11; i++) {
+                if (dragState[i].dragging && dragState[i].touch && window.activeCircleId === i) {
+                    const touch = e.touches[0];
+                    let x = touch.clientX - dragState[i].offsetX;
+                    let y = touch.clientY - dragState[i].offsetY;
+                    let ts = Date.now();
+                    circles[i].style.left = x + 'px';
+                    circles[i].style.top = y + 'px';
+                    socket.emit('move_circle', { x, y, ts, id: i });
+                    e.preventDefault();
+                }
+            }
+        }, { passive: false });
 
+        // Touch end
+        document.addEventListener('touchend', () => {
+            for (let i = 1; i <= 11; i++) {
+                dragState[i].dragging = false;
+                dragState[i].active = false;
+            }
+            window.activeCircleId = undefined;
+        });
+
+        // Listen for updates for all circles
         socket.on('update_circle', (data) => {
-            if (typeof data.ts === 'number' && data.ts >= lastReceived) {
-                lastReceived = data.ts;
-                moveCircle(data.x, data.y);
+            const i = data.id;
+            if (circles[i] && typeof data.ts === 'number' && data.ts >= dragState[i].lastReceived) {
+                dragState[i].lastReceived = data.ts;
+                circles[i].style.left = data.x + 'px';
+                circles[i].style.top = data.y + 'px';
             }
         });
     </script>
