@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Draggable Circle Conference</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        #circle {
+            width: 80px; height: 80px;
+            background: #33aaff; border-radius: 50%;
+            position: absolute; left: 200px; top: 200px;
+            cursor: grab;
+            touch-action: none;
+        }
+        body { margin: 0; overflow: hidden; }
+    </style>
+</head>
+<body>
+    <div id="circle"></div>
+    <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
+    <script>
+        const socket = io();
+        const circle = document.getElementById('circle');
+        let dragging = false, offsetX = 0, offsetY = 0;
+
+        function moveCircle(x, y) {
+            circle.style.left = x + 'px';
+            circle.style.top = y + 'px';
+        }
+
+        // For out-of-order fix
+        let lastReceived = 0;
+
+        // Mouse events
+        circle.addEventListener('mousedown', (e) => {
+            dragging = true;
+            offsetX = e.offsetX;
+            offsetY = e.offsetY;
+        });
+
+        document.addEventListener('mousemove', (e) => {
+            if (dragging) {
+                let x = e.clientX - offsetX;
+                let y = e.clientY - offsetY;
+                let ts = Date.now();
+                moveCircle(x, y);
+                socket.emit('move_circle', {x, y, ts});
+            }
+        });
+
+        document.addEventListener('mouseup', () => dragging = false);
+
+        // Touch events
+        circle.addEventListener('touchstart', (e) => {
+            dragging = true;
+            const touch = e.touches[0];
+            const rect = circle.getBoundingClientRect();
+            offsetX = touch.clientX - rect.left;
+            offsetY = touch.clientY - rect.top;
+            e.preventDefault();
+        }, {passive: false});
+
+        document.addEventListener('touchmove', (e) => {
+            if (dragging) {
+                const touch = e.touches[0];
+                let x = touch.clientX - offsetX;
+                let y = touch.clientY - offsetY;
+                let ts = Date.now();
+                moveCircle(x, y);
+                socket.emit('move_circle', {x, y, ts});
+                e.preventDefault();
+            }
+        }, {passive: false});
+
+        document.addEventListener('touchend', () => dragging = false);
+
+        socket.on('update_circle', (data) => {
+            if (typeof data.ts === 'number' && data.ts >= lastReceived) {
+                lastReceived = data.ts;
+                moveCircle(data.x, data.y);
+            }
+        });
+    </script>
+</body>
+</html>
