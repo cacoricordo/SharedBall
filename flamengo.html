@@ -234,7 +234,7 @@
             font-size: 14px;
             user-select: none;
         }
-        .circleFla {
+        .circle {
             width: 26px; height: 26px;
             background: #33aaff; border-radius: 50%;
             position: absolute;
@@ -291,29 +291,29 @@
 "></div>
     <div id="gol-square" class="gol-square"></div>
     <div id="gol2-square" class="gol2-square"></div>
-    <div id="circle1" class="circleFla" style="background: #ff3333;">1</div>
-    <div id="circle2" class="circleFla" style="background: #ff3333;">2</div>
-    <div id="circle3" class="circleFla" style="background: #ff3333;">3</div>
-    <div id="circle4" class="circleFla" style="background: #ff3333;">4</div>
-    <div id="circle5" class="circleFla" style="background: #ff3333;">5</div>
-    <div id="circle6" class="circleFla" style="background: #ff3333;">6</div>
-    <div id="circle7" class="circleFla" style="background: #ff3333;">7</div>
-    <div id="circle8" class="circleFla" style="background: #ff3333;">8</div>
-    <div id="circle9" class="circleFla" style="background: #ff3333;">9</div>
-    <div id="circle10" class="circleFla" style="background: #ff3333;">10</div>
-    <div id="circle11" class="circleFla" style="background: #ff3333;">11</div>
-    <div id="circle13" class="circleFla">1</div>
-    <div id="circle14" class="circleFla">2</div>
-    <div id="circle15" class="circleFla">3</div>
-    <div id="circle16" class="circleFla">4</div>
-    <div id="circle17" class="circleFla">5</div>
-    <div id="circle18" class="circleFla">6</div>
-    <div id="circle19" class="circleFla">7</div>
-    <div id="circle20" class="circleFla">8</div>
-    <div id="circle21" class="circleFla">9</div>
-    <div id="circle22" class="circleFla">10</div>
-    <div id="circle23" class="circleFla">11</div>
-    <div id="circle24" class="circleFla" style="background: #ffffff;"></div>
+    <div id="circle1" class="circle" style="background: #ff3333;">1</div>
+    <div id="circle2" class="circle" style="background: #ff3333;">2</div>
+    <div id="circle3" class="circle" style="background: #ff3333;">3</div>
+    <div id="circle4" class="circle" style="background: #ff3333;">4</div>
+    <div id="circle5" class="circle" style="background: #ff3333;">5</div>
+    <div id="circle6" class="circle" style="background: #ff3333;">6</div>
+    <div id="circle7" class="circle" style="background: #ff3333;">7</div>
+    <div id="circle8" class="circle" style="background: #ff3333;">8</div>
+    <div id="circle9" class="circle" style="background: #ff3333;">9</div>
+    <div id="circle10" class="circle" style="background: #ff3333;">10</div>
+    <div id="circle11" class="circle" style="background: #ff3333;">11</div>
+    <div id="circle13" class="circle">1</div>
+    <div id="circle14" class="circle">2</div>
+    <div id="circle15" class="circle">3</div>
+    <div id="circle16" class="circle">4</div>
+    <div id="circle17" class="circle">5</div>
+    <div id="circle18" class="circle">6</div>
+    <div id="circle19" class="circle">7</div>
+    <div id="circle20" class="circle">8</div>
+    <div id="circle21" class="circle">9</div>
+    <div id="circle22" class="circle">10</div>
+    <div id="circle23" class="circle">11</div>
+    <div id="circle24" class="circle" style="background: #ffffff;"></div>
     <div id="fullscreen-overlay" style="
         position: fixed; left:0; top:0; width:100vw; height:100vh; 
         background: rgba(0,0,0,0.7); color: #fff; 
@@ -594,8 +594,8 @@
         const dragState = {};
 
         for (let i = 1; i <= 24; i++) {
-            const el = document.getElementById('circleFla' + i);
-            circles[i] = el;
+            const el = document.getElementById('circle' + i);
+            circles[i] = so;
             dragState[i] = {
                 dragging: false,
                 offsetX: 0,
@@ -604,7 +604,7 @@
             };
 
             // Mouse events
-            el.addEventListener('mousedown', (e) => {
+            so.addEventListener('mousedown', (e) => {
                 dragState[i].dragging = true;
                 dragState[i].offsetX = e.offsetX;
                 dragState[i].offsetY = e.offsetY;
@@ -614,10 +614,10 @@
             });
 
             // Touch events
-            el.addEventListener('touchstart', (e) => {
+            so.addEventListener('touchstart', (e) => {
                 dragState[i].dragging = true;
                 const touch = e.touches[0];
-                const rect = el.getBoundingClientRect();
+                const rect = so.getBoundingClientRect();
                 dragState[i].offsetX = touch.clientX - rect.left;
                 dragState[i].offsetY = touch.clientY - rect.top;
                 dragState[i].active = true;
@@ -636,7 +636,7 @@
                     let ts = Date.now();
                     circles[i].style.left = x + 'px';
                     circles[i].style.top = y + 'px';
-                    socket.emit('move_circleFla', { x, y, ts, id: i });
+                    socket.emit('move_circle', { x, y, ts, id: i });
                 }
             }
         });
@@ -660,7 +660,7 @@
                     let ts = Date.now();
                     circles[i].style.left = x + 'px';
                     circles[i].style.top = y + 'px';
-                    socket.emit('move_circleFla', { x, y, ts, id: i });
+                    socket.emit('move_mengo', { x, y, ts, id: i });
                     e.preventDefault();
                 }
             }
@@ -676,7 +676,7 @@
         });
 
         // Listen for updates for all circles
-        socket.on('update_circleFla', (data) => {
+        socket.on('update_circle', (data) => {
             const i = data.id;
             if (circles[i] && typeof data.ts === 'number' && data.ts >= dragState[i].lastReceived) {
                 dragState[i].lastReceived = data.ts;
