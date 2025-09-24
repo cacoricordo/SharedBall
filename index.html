@@ -18,7 +18,7 @@
     <div id="circle"></div>
     <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
     <script>
-        const socket = io();
+        const socket = io('https://sharedball.onrender.com'); 
         const circle = document.getElementById('circle');
         let dragging = false, offsetX = 0, offsetY = 0;
 
