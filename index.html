@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Draggable Circle Conference</title>
+    <title>Mesa Tática Compartilhada</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
         .background-square {  /* Gramado */
@@ -236,17 +236,17 @@
             font-size: 14px;
             user-select: none;
         }
-        #circle1 { left: 100px; top: 100px; background: #ff33aa; }
-        #circle2 { left: 160px; top: 100px; background: #33ff88; }
-        #circle3 { left: 220px; top: 100px; background: #33ff88; }
-        #circle4 { left: 280px; top: 100px; background: #33ff88; }
-        #circle5 { left: 340px; top: 100px; background: #33ff88; }
-        #circle6 { left: 100px; top: 160px; background: #33ff88; }
-        #circle7 { left: 160px; top: 160px; background: #33ff88; }
-        #circle8 { left: 220px; top: 160px; background: #33ff88; }
-        #circle9 { left: 280px; top: 160px; background: #33ff88; }
-        #circle10 { left: 340px; top: 160px; background: #33ff88; }
-        #circle11 { left: 400px; top: 130px; background: #33ff88; }
+        #circle1 { left: 25px; top: 160px; background: #ff33aa; }
+        #circle2 { left: 160px; top: 270px; background: #33ff88; }
+        #circle3 { left: 120px; top: 130px; background: #33ff88; }
+        #circle4 { left: 120px; top: 200px; background: #33ff88; }
+        #circle5 { left: 200px; top: 160px; background: #33ff88; }
+        #circle6 { left: 160px; top: 40px; background: #33ff88; }
+        #circle7 { left: 300px; top: 270px; background: #33ff88; }
+        #circle8 { left: 260px; top: 160px; background: #33ff88; }
+        #circle9 { left: 370px; top: 160px; background: #33ff88; }
+        #circle10 { left: 230px; top: 120px; background: #33ff88; }
+        #circle11 { left: 320px; top: 40px; background: #33ff88; }
         body { margin: 0; overflow: hidden; background-color: green; }
     </style>
 </head>
@@ -287,12 +287,39 @@
         background: rgba(0,0,0,0.7); color: #fff; 
         display: flex; align-items: center; justify-content: center; 
         z-index: 9999; font-size: 2em; cursor: pointer;">
-        Clique ou toque para entrar em tela cheia
+        Toque para entrar na Mesa Tática
     </div>
+<!-- Clube dos 13 Menu Overlay -->
+<div id="clube-menu-overlay" style="
+    display:none; position:fixed; left:0; top:0; width:100vw; height:100vh;
+    background:rgba(0,0,0,0.85); z-index:10001; flex-direction:column; align-items:center; justify-content:center;">
+    <div style="background:#fff; color:#111; border-radius:12px; padding:30px 16px 16px 16px; min-width:280px; max-width:90vw;">
+        <h2 style="text-align:center; margin-top:0;">Clube dos 13</h2>
+        <ul style="list-style:none; padding:0; margin:0;">
+            <li><a class="clube-link" href="clube1.html">Clube 1</a></li>
+            <li><a class="clube-link" href="clube2.html">Clube 2</a></li>
+            <li><a class="clube-link" href="clube3.html">Clube 3</a></li>
+            <li><a class="clube-link" href="clube4.html">Clube 4</a></li>
+            <li><a class="clube-link" href="clube5.html">Clube 5</a></li>
+            <li><a class="clube-link" href="clube6.html">Clube 6</a></li>
+            <li><a class="clube-link" href="clube7.html">Clube 7</a></li>
+            <li><a class="clube-link" href="clube8.html">Clube 8</a></li>
+            <li><a class="clube-link" href="clube9.html">Clube 9</a></li>
+            <li><a class="clube-link" href="clube10.html">Clube 10</a></li>
+            <li><a class="clube-link" href="clube11.html">Clube 11</a></li>
+            <li><a class="clube-link" href="clube12.html">Clube 12</a></li>
+            <li><a class="clube-link" href="clube13.html">Clube 13</a></li>
+        </ul>
+        <button id="close-clube-menu" style="
+            display:block; margin:20px auto 0 auto; padding:8px 24px; font-size:1em; border-radius:8px; background:#222; color:#fff; border:none; cursor:pointer;">
+            Fechar
+        </button>
+    </div>
+</div>
 <!-- Exit fullscreen button -->
     <button id="exit-fullscreen-btn" style="
         position: fixed;
-        top: 20px; right: 20px;
+        top: 380px; left: 20px;
         z-index: 10000;
         font-size: 1.2em;
         padding: 10px 18px;
@@ -302,8 +329,38 @@
         cursor: pointer;
         display: none;
         box-shadow: 0 2px 6px rgba(0,0,0,0.15);
-    ">Sair da Tela Cheia</button>
+    ">Sair (x)</button>
+    <button id="clube-dos-13" style="
+        position: fixed;
+        top: 380px; left: 120px;
+        z-index: 10000;
+        font-size: 1.2em;
+        padding: 10px 18px;
+        border-radius: 8px;
+        background: #222; color: #fff;
+        border: none;
+        cursor: pointer;
+        display: none;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+    ">Clube dos 13</button>
   <script>
+    // Show Clube dos 13 menu
+    document.getElementById('clube-dos-13').addEventListener('click', function(e) {
+        e.preventDefault();
+        document.getElementById('clube-menu-overlay').style.display = 'flex';
+    });
+
+    // Close Clube dos 13 menu
+    document.getElementById('close-clube-menu').addEventListener('click', function() {
+        document.getElementById('clube-menu-overlay').style.display = 'none';
+    });
+
+    // Optional: Hide menu if user clicks outside the menu box
+    document.getElementById('clube-menu-overlay').addEventListener('click', function(e) {
+        if (e.target === this) {
+            this.style.display = 'none';
+        }
+    }); 
         // Enter Fullscreen
         document.getElementById('fullscreen-overlay').addEventListener('click', async function() {
             const el = document.documentElement;
@@ -340,12 +397,43 @@
             }
         }
 
+        // Show/hide clube button on fullscreen change
+        function updateButtonClube() {
+            const btn = document.getElementById('clube-dos-13');
+            if (
+                document.fullscreenElement ||
+                document.gotoAndPlayClubeList
+            ) {
+                btn.style.display = 'block';
+            } else {
+                btn.style.display = 'none';
+            }
+        }
+
         document.addEventListener('fullscreenchange', updateExitButton);
         document.addEventListener('webkitfullscreenchange', updateExitButton);
         document.addEventListener('msfullscreenchange', updateExitButton);
+        document.addEventListener('fullscreenchange', updateButtonClube);
 
         // Exit Fullscreen function
         document.getElementById('exit-fullscreen-btn').addEventListener('click', async function() {
+            if (document.exitFullscreen) {
+                await document.exitFullscreen();
+            } else if (document.webkitExitFullscreen) { /* Safari */
+                await document.webkitExitFullscreen();
+            } else if (document.msExitFullscreen) { /* IE11 */
+                await document.msExitFullscreen();
+            }
+            // Optionally unlock orientation if supported
+            if (screen.orientation && screen.orientation.unlock) {
+                try {
+                    await screen.orientation.unlock();
+                } catch (e) {}
+            }
+        });
+
+        // Clube function
+        document.getElementById('clube-dos-13').addEventListener('click', async function() {
             if (document.exitFullscreen) {
                 await document.exitFullscreen();
             } else if (document.webkitExitFullscreen) { /* Safari */
