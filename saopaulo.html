@@ -636,7 +636,7 @@
                     let ts = Date.now();
                     circles[i].style.left = x + 'px';
                     circles[i].style.top = y + 'px';
-                    socket.emit('move_circle', { x, y, ts, id: i });
+                    socket.emit('move_sp_circle', { x, y, ts, id: i });
                 }
             }
         });
@@ -660,7 +660,7 @@
                     let ts = Date.now();
                     circles[i].style.left = x + 'px';
                     circles[i].style.top = y + 'px';
-                    socket.emit('move_circle', { x, y, ts, id: i });
+                    socket.emit('move_sp_circle', { x, y, ts, id: i });
                     e.preventDefault();
                 }
             }
