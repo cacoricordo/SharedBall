@@ -392,7 +392,7 @@
 ">Sala de Troféus</button>
 <button id="pen-path-btn" style="
     position: fixed;
-    top: 330px; left: 222px;
+    top: 380px; left: 222px;
     z-index: 10000;
     font-size: 1.2em;
     padding: 10px 18px;
@@ -570,6 +570,7 @@
     const ctx = canvas.getContext('2d');
     let drawing = false;
     let currentPath = [];
+
     penBtn.addEventListener('click', function() {
         penMode = !penMode;
         penBtn.style.background = penMode ? "#33aaff" : "#222";
@@ -615,7 +616,7 @@
         if (drawing && penMode) {
             drawing = false;
             ctx.closePath();
-            // Share path via socket
+            // Share path via socket.io
             socket.emit('path_draw', { path: currentPath });
         }
     });
@@ -659,7 +660,7 @@
         e.preventDefault();
     }, { passive: false });
 
-    // Receive and render shared paths
+    // Receive and render shared paths from other users
     socket.on('path_draw', function(data) {
         if (data && Array.isArray(data.path)) {
             ctx.beginPath();
