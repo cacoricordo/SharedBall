@@ -11,6 +11,11 @@ io.on('connection', (socket) => {
     // data: { x, y, ts, id }
     socket.broadcast.emit('update_circle', data);
   });
+  // Pen Path: share drawn traces
+  socket.on('path_draw', (data) => {
+    // data: { path: [[x1, y1], [x2, y2], ...] }
+    socket.broadcast.emit('path_draw', data);
+  });
 });
 
 const PORT = process.env.PORT || 10000;
