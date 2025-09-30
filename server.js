@@ -23,26 +23,6 @@ server.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
 
-const bodyParser = require('body-parser');
-app.use(bodyParser.json());
-
-app.post('/ai/analyze', (req, res) => {
-  // green team positions: req.body.green (array of {id, left, top})
-  // AI logic here: For demo, just mirror positions
-  const red = [];
-  for (let i = 0; i < 10; i++) {
-    const g = req.body.green[i];
-    if (g) {
-      // Example: Place red opposite side horizontally
-      red.push({
-        id: 13 + i,
-        left: 600 - g.left, // Mirror horizontally
-        top: g.top // Keep same vertical
-      });
-    }
-  }
-  res.json({ red });
-});
 
 const bodyParser = require('body-parser');
 app.use(bodyParser.json());
