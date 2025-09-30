@@ -414,7 +414,19 @@
     display: none;
     box-shadow: 0 2px 6px rgba(0,0,0,0.15);
 ">✎ Desenho Tático</button>
-
+<button id="ai-analise-btn" style="
+    position: fixed;
+    top: 330px; left: 500px;
+    z-index: 10000;
+    font-size: 1.2em;
+    padding: 10px 18px;
+    border-radius: 8px;
+    background: #33aaff; color: #fff;
+    border: none;
+    cursor: pointer;
+    display: none;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+">AI Análise</button>
 <canvas id="trace-canvas" width="600" height="300" style="
     position:absolute;
     left:20px; top:20px;
@@ -795,6 +807,74 @@
     }
     window.addEventListener('resize', clearCanvas);
     document.addEventListener('fullscreenchange', clearCanvas);
+</script>
+<script>
+    // Show AI button on fullscreen
+    function updateAIButton() {
+        const btn = document.getElementById('ai-analise-btn');
+        if (
+            document.fullscreenElement ||
+            document.webkitFullscreenElement ||
+            document.msFullscreenElement
+        ) {
+            btn.style.display = 'block';
+        } else {
+            btn.style.display = 'none';
+        }
+    }
+    document.addEventListener('fullscreenchange', updateAIButton);
+    document.addEventListener('webkitfullscreenchange', updateAIButton);
+    document.addEventListener('msfullscreenchange', updateAIButton);
+
+    // Helper: Get green team positions (circle2 to circle11)
+    function getGreenTeamPositions() {
+        const positions = [];
+        for (let i = 2; i <= 11; i++) {
+            const el = document.getElementById('circle' + i);
+            const left = parseInt(el.style.left || el.offsetLeft);
+            const top = parseInt(el.style.top || el.offsetTop);
+            positions.push({ id: i, left, top });
+        }
+        return positions;
+    }
+
+    // Helper: Update red team positions (circle13 to circle23)
+    function setRedTeamPositions(arr) {
+        // arr: [{id: 13, left:..., top:...}, ...]
+        for (const p of arr) {
+            const el = document.getElementById('circle' + p.id);
+            if (el) {
+                el.style.left = p.left + 'px';
+                el.style.top = p.top + 'px';
+            }
+        }
+    }
+
+    // AI Button event
+    document.getElementById('ai-analise-btn').addEventListener('click', async function() {
+        const greenPositions = getGreenTeamPositions();
+        // Show loading
+        this.textContent = "Analisando...";
+        this.disabled = true;
+        try {
+            const response = await fetch('/ai/analyze', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ green: greenPositions })
+            });
+            const result = await response.json();
+            if (result.red && Array.isArray(result.red)) {
+                setRedTeamPositions(result.red);
+                alert("AI posicionou o time vermelho!");
+            } else {
+                alert("Erro na resposta da AI.");
+            }
+        } catch (e) {
+            alert("Falha na análise AI.");
+        }
+        this.textContent = "AI Análise";
+        this.disabled = false;
+    });
 </script>
 
 <img src="img/Guarani.png" alt="Guarani F.C." style="
