@@ -875,6 +875,39 @@
         this.textContent = "AI Análise";
         this.disabled = false;
     });
+
+function getBallPosition() {
+    const el = document.getElementById('circle24');
+    const left = parseInt(el.style.left || el.offsetLeft);
+    const top = parseInt(el.style.top || el.offsetTop);
+    return { left, top };
+}
+
+document.getElementById('ai-analise-btn').addEventListener('click', async function() {
+    const greenPositions = getGreenTeamPositions();
+    const ballPosition = getBallPosition();
+    // Show loading
+    this.textContent = "Analisando...";
+    this.disabled = true;
+    try {
+        const response = await fetch('/ai/analyze', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ green: greenPositions, ball: ballPosition })
+        });
+        const result = await response.json();
+        if (result.red && Array.isArray(result.red)) {
+            setRedTeamPositions(result.red);
+            alert("AI posicionou o time vermelho!");
+        } else {
+            alert("Erro na resposta da AI.");
+        }
+    } catch (e) {
+        alert("Falha na análise AI.");
+    }
+    this.textContent = "AI Análise";
+    this.disabled = false;
+});
 </script>
 
 <img src="img/Guarani.png" alt="Guarani F.C." style="
