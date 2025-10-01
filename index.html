@@ -278,6 +278,8 @@
         #circle9 { left: 370px; top: 160px; background: #33ff88; }
         #circle10 { left: 230px; top: 120px; background: #33ff88; }
         #circle11 { left: 320px; top: 40px; background: #33ff88; }
+        #circle23 { left: 620px; top: 40px; background: #660000; }
+        #circle24 { left: 420px; top: 40px; background: #ffffff; }
         body { margin: 0; overflow: hidden; background-color: green; }
     </style>
 </head>
@@ -320,7 +322,7 @@
     <div id="circle9" class="circle">9</div>
     <div id="circle10" class="circle">10</div>
     <div id="circle11" class="circle">11</div>
-    <div id="circle13" class="circle" style="background: #ff3333;">1</div>
+    <div id="circle13" class="circle" style="background: #ff3333;">11</div>
     <div id="circle14" class="circle" style="background: #ff3333;">2</div>
     <div id="circle15" class="circle" style="background: #ff3333;">3</div>
     <div id="circle16" class="circle" style="background: #ff3333;">4</div>
@@ -330,8 +332,8 @@
     <div id="circle20" class="circle" style="background: #ff3333;">8</div>
     <div id="circle21" class="circle" style="background: #ff3333;">9</div>
     <div id="circle22" class="circle" style="background: #ff3333;">10</div>
-    <div id="circle23" class="circle" style="background: #ff3333;">11</div>
-    <div id="circle24" class="circle" style="background: #ffffff;"></div>
+    <div id="circle23" class="circle">01</div>
+    <div id="circle24" class="circle"></div>
     <div id="fullscreen-overlay" style="
         position: fixed; left:0; top:0; width:100vw; height:100vh; 
         background: rgba(0,0,0,0.7); color: #fff; 
@@ -400,7 +402,7 @@
     cursor: pointer;
     display: none;
     box-shadow: 0 2px 6px rgba(0,0,0,0.15);
-">Sala de Troféus</button>
+">Troféus</button>
 <button id="pen-path-btn" style="
     position: fixed;
     top: 330px; left: 302px;
@@ -414,7 +416,19 @@
     display: none;
     box-shadow: 0 2px 6px rgba(0,0,0,0.15);
 ">✎ Desenho Tático</button>
-
+<button id="ai-analise-btn" style="
+    position: fixed;
+    top: 330px; left: 120px;
+    z-index: 10000;
+    font-size: 1.2em;
+    padding: 10px 18px;
+    border-radius: 8px;
+    background: #33aaff; color: #fff;
+    border: none;
+    cursor: pointer;
+    display: none;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+">AI Análise</button>
 <canvas id="trace-canvas" width="600" height="300" style="
     position:absolute;
     left:20px; top:20px;
@@ -647,12 +661,20 @@
         });
 
         // Listen for updates for all circles
-        socket.on('update_circle', 'path_draw', (data) => {
+        socket.on('update_circle', (data) => {
             const i = data.id;
             if (circles[i] && typeof data.ts === 'number' && data.ts >= dragState[i].lastReceived) {
                 dragState[i].lastReceived = data.ts;
                 circles[i].style.left = data.x + 'px';
                 circles[i].style.top = data.y + 'px';
+            }
+        });
+
+        // Listen for updates for all circles
+        socket.on('path_draw', (data) => {
+            const i = data.id;
+            if (circles[i] && typeof data.ts === 'number' && data.ts >= dragState[i].lastReceived) {
+                dragState[i].lastReceived = data.ts;
             }
         });
     </script>
@@ -795,6 +817,107 @@
     }
     window.addEventListener('resize', clearCanvas);
     document.addEventListener('fullscreenchange', clearCanvas);
+</script>
+<script>
+    // Show AI button on fullscreen
+    function updateAIButton() {
+        const btn = document.getElementById('ai-analise-btn');
+        if (
+            document.fullscreenElement ||
+            document.webkitFullscreenElement ||
+            document.msFullscreenElement
+        ) {
+            btn.style.display = 'block';
+        } else {
+            btn.style.display = 'none';
+        }
+    }
+    document.addEventListener('fullscreenchange', updateAIButton);
+    document.addEventListener('webkitfullscreenchange', updateAIButton);
+    document.addEventListener('msfullscreenchange', updateAIButton);
+
+    // Helper: Get green team positions (circle2 to circle11)
+    function getGreenTeamPositions() {
+        const positions = [];
+        for (let i = 2; i <= 11; i++) {
+            const el = document.getElementById('circle' + i);
+            const left = parseInt(el.style.left || el.offsetLeft);
+            const top = parseInt(el.style.top || el.offsetTop);
+            positions.push({ id: i, left, top });
+        }
+        return positions;
+    }
+
+    // Helper: Update red team positions (circle13 to circle23)
+    function setRedTeamPositions(arr) {
+        // arr: [{id: 13, left:..., top:...}, ...]
+        for (const p of arr) {
+            const el = document.getElementById('circle' + p.id);
+            if (el) {
+                el.style.left = p.left + 'px';
+                el.style.top = p.top + 'px';
+            }
+        }
+    }
+
+    // AI Button event
+    document.getElementById('ai-analise-btn').addEventListener('click', async function() {
+        const greenPositions = getGreenTeamPositions();
+        // Show loading
+        this.textContent = "Analisando...";
+        this.disabled = true;
+        try {
+            const response = await fetch('/ai/analyze', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ green: greenPositions })
+            });
+            const result = await response.json();
+            if (result.red && Array.isArray(result.red)) {
+                setRedTeamPositions(result.red);
+                alert("AI posicionou o time vermelho!");
+            } else {
+                alert("Erro na resposta da AI.");
+            }
+        } catch (e) {
+            alert("Falha na análise AI.");
+        }
+        this.textContent = "AI Análise";
+        this.disabled = false;
+    });
+
+function getBallPosition() {
+    const el = document.getElementById('circle24');
+    const left = parseInt(el.style.left || el.offsetLeft);
+    const top = parseInt(el.style.top || el.offsetTop);
+    return { left, top };
+}
+
+document.getElementById('ai-analise-btn').addEventListener('click', async function() {
+    const greenPositions = getGreenTeamPositions();
+    const ballPosition = getBallPosition();
+    // Show loading
+    this.textContent = "Analisando...";
+    this.disabled = true;
+    try {
+        const response = await fetch('/ai/analyze', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ green: greenPositions, ball: ballPosition })
+        });
+        const result = await response.json();
+        if (result.red && Array.isArray(result.red)) {
+            setRedTeamPositions(result.red);
+            alert("AI posicionou o time vermelho!");
+        } else {
+            alert("Erro na resposta da AI.");
+        }
+    } catch (e) {
+        alert("Falha na análise AI.");
+    }
+    this.textContent = "AI Análise";
+    this.disabled = false;
+});
 </script>
 
 <img src="img/Guarani.png" alt="Guarani F.C." style="
