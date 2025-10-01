@@ -670,13 +670,6 @@
             }
         });
 
-        // Listen for updates for all circles
-        socket.on('path_draw', (data) => {
-            const i = data.id;
-            if (circles[i] && typeof data.ts === 'number' && data.ts >= dragState[i].lastReceived) {
-                dragState[i].lastReceived = data.ts;
-            }
-        });
     </script>
 
 <script>
