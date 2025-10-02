@@ -131,9 +131,51 @@
         border-radius:8px;
         background:transparent;
         display: block;
-    "></canvas>
+"></canvas>
 
   <script>
+    // Show/hide Sala de Troféus button on fullscreen change (just like Clube dos 13)
+    function updateButtonSalaTrofeus() {
+        const btn = document.getElementById('sala-trofeus-btn');
+        if (
+            document.fullscreenElement ||
+            document.webkitFullscreenElement ||
+            document.msFullscreenElement
+        ) {
+            btn.style.display = 'block';
+        } else {
+            btn.style.display = 'none';
+        }
+    }
+    document.addEventListener('fullscreenchange', updateButtonSalaTrofeus);
+    document.addEventListener('webkitfullscreenchange', updateButtonSalaTrofeus);
+    document.addEventListener('msfullscreenchange', updateButtonSalaTrofeus);
+
+    // (example action: open an alert, you can change this to show a modal, etc)
+    document.getElementById('sala-trofeus-btn').addEventListener('click', function() {
+        alert('Abrir I N V I C T O Zone!');
+        // You can replace the above with your modal or navigation logic
+    });
+    document.getElementById('sala-trofeus-btn').addEventListener('click', function() {
+        window.location.href = "https://wa.me/5519988108063";
+    });
+    // Show Clube dos 13 menu
+    document.getElementById('clube-dos-13').addEventListener('click', function(e) {
+        e.preventDefault();
+        document.getElementById('clube-menu-overlay').style.display = 'flex';
+    });
+
+    // Close Clube dos 13 menu
+    document.getElementById('close-clube-menu').addEventListener('click', function() {
+        document.getElementById('clube-menu-overlay').style.display = 'none';
+    });
+
+    // Optional: Hide menu if user clicks outside the menu box
+    document.getElementById('clube-menu-overlay').addEventListener('click', function(e) {
+        if (e.target === this) {
+            this.style.display = 'none';
+        }
+    }); 
         // Enter Fullscreen
         document.getElementById('fullscreen-overlay').addEventListener('click', async function() {
             const el = document.documentElement;
@@ -170,8 +212,43 @@
             }
         }
 
+        // Show/hide clube button on fullscreen change
+        function updateButtonClube() {
+            const btn = document.getElementById('clube-dos-13');
+            if (
+                document.fullscreenElement ||
+                document.gotoAndPlayClubeList
+            ) {
+                btn.style.display = 'block';
+            } else {
+                btn.style.display = 'none';
+            }
+        }
+
+        document.addEventListener('fullscreenchange', updateExitButton);
+        document.addEventListener('webkitfullscreenchange', updateExitButton);
+        document.addEventListener('msfullscreenchange', updateExitButton);
+        document.addEventListener('fullscreenchange', updateButtonClube);
+
         // Exit Fullscreen function
         document.getElementById('exit-fullscreen-btn').addEventListener('click', async function() {
+            if (document.exitFullscreen) {
+                await document.exitFullscreen();
+            } else if (document.webkitExitFullscreen) { /* Safari */
+                await document.webkitExitFullscreen();
+            } else if (document.msExitFullscreen) { /* IE11 */
+                await document.msExitFullscreen();
+            }
+            // Optionally unlock orientation if supported
+            if (screen.orientation && screen.orientation.unlock) {
+                try {
+                    await screen.orientation.unlock();
+                } catch (e) {}
+            }
+        });
+
+        // Clube function
+        document.getElementById('clube-dos-13').addEventListener('click', async function() {
             if (document.exitFullscreen) {
                 await document.exitFullscreen();
             } else if (document.webkitExitFullscreen) { /* Safari */
