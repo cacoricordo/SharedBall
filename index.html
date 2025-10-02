@@ -96,19 +96,6 @@
         display: none;
         box-shadow: 0 2px 6px rgba(0,0,0,0.15);
     ">Sair (x)</button>
-    <button id="sala-trofeus-btn" style="
-        position: fixed;
-        top: 330px; left: 120px;
-        z-index: 10000;
-        font-size: 1.2em;
-        padding: 10px 18px;
-        border-radius: 8px;
-        background: #222; color: #fff;
-        border: none;
-        cursor: pointer;
-        display: none;
-        box-shadow: 0 2px 6px rgba(0,0,0,0.15);
-    ">Suporte</button>
 <button id="pen-path-btn" style="
     position: fixed;
     top: 330px; left: 302px;
@@ -146,33 +133,7 @@
 "></canvas>
 
   <script>
-    // Show/hide Sala de Troféus button on fullscreen change (just like Clube dos 13)
-    function updateButtonSalaTrofeus() {
-        const btn = document.getElementById('sala-trofeus-btn');
-        if (
-            document.fullscreenElement ||
-            document.webkitFullscreenElement ||
-            document.msFullscreenElement
-        ) {
-            btn.style.display = 'block';
-        } else {
-            btn.style.display = 'none';
-        }
-    }
-    document.addEventListener('fullscreenchange', updateButtonSalaTrofeus);
-    document.addEventListener('webkitfullscreenchange', updateButtonSalaTrofeus);
-    document.addEventListener('msfullscreenchange', updateButtonSalaTrofeus);
-
-    // (example action: open an alert, you can change this to show a modal, etc)
-    document.getElementById('sala-trofeus-btn').addEventListener('click', function() {
-        alert('Abrir I N V I C T O Zone!');
-        // You can replace the above with your modal or navigation logic
-    });
-    document.getElementById('sala-trofeus-btn').addEventListener('click', function() {
-        window.location.href = "https://wa.me/5519988108063";
-    });
-
-        // Enter Fullscreen
+  // Enter Fullscreen
         document.getElementById('fullscreen-overlay').addEventListener('click', async function() {
             const el = document.documentElement;
             // Try fullscreen
