@@ -10,15 +10,16 @@
     <meta property="og:image" content="https://mesatatica.onrender.com/img/trofeujoia.png"/>
     <meta property="og:image:width" content="580"/>
     <meta property="og:image:height" content="464"/>
-<!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-CK9EKD4Z71"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
+    
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-CK9EKD4Z71"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
 
-  gtag('config', 'G-CK9EKD4Z71');
-</script>
+        gtag('config', 'G-CK9EKD4Z71');
+    </script>
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5431792291775132"
      crossorigin="anonymous"></script>
     <link rel="stylesheet" href="styles.css">
@@ -42,13 +43,13 @@
     <div id="background-line15"></div>
     <div id="background-line16"></div>
     <div id="background-line17"></div>
-<div id="circle12" class="circlecentral" style="
+    <div id="circulo_central" class="circlecentral" style="
     background: transparent;
     left: 237px;
     top: 100px;
     border: 2px solid #ffffff;
     color: #ffffff;
-"></div>
+    "></div>
     <div id="gol-square" class="gol-square"></div>
     <div id="gol2-square" class="gol2-square"></div>
     <div id="circle1" class="circle">1</div>
@@ -81,26 +82,6 @@
         z-index: 9999; font-size: 2em; cursor: pointer;">
         Toque para entrar na Mesa Tática
     </div>
-<!-- Clube dos 13 Menu Overlay -->
-<div id="clube-menu-overlay" style="
-    display:none; position:fixed; left:0; top:0; width:100vw; height:100vh;
-    background:rgba(0,0,0,0.85); z-index:10001; flex-direction:column; align-items:center; justify-content:center;">
-    <div style="background:#fff; color:#111; border-radius:12px; padding:30px 16px 16px 16px; min-width:280px; max-width:90vw;">
-        <h2 style="text-align:left; margin-top:0;">PRATA JÓIA-TROFÉU</h2>
-        <ul style="list-style:none; padding:0; margin:0;">
-             <li>
-              <a class="clube-link" href="https://wa.me/5519988108063?text=Envie%20mensagem%3A%20an%C3%BAncie%20aqui!%20Compre%20no%20site%20para%20investir." style="display:flex; align-items:left;">
-                <img src="img/trofeujoia.png" width="300" alt="Jóia Troféu" style="margin-right:6px;"/>
-                Faça seu pedido @Whatsapp-link, click!
-              </a>
-            </li>
-        </ul>
-        <button id="close-clube-menu" style="
-            display:block; margin:20px auto 0 auto; padding:8px 24px; font-size:1em; border-radius:8px; background:#222; color:#fff; border:none; cursor:pointer;">
-            Fechar
-        </button>
-    </div>
-</div>
 
 <!-- Exit fullscreen button -->
     <button id="exit-fullscreen-btn" style="
@@ -116,9 +97,9 @@
         display: none;
         box-shadow: 0 2px 6px rgba(0,0,0,0.15);
     ">Sair (x)</button>
-    <button id="sala-trofeus-btn" style="
+    <button id="pen-path-btn" style="
         position: fixed;
-        top: 330px; left: 120px;
+        top: 330px; left: 302px;
         z-index: 10000;
         font-size: 1.2em;
         padding: 10px 18px;
@@ -128,100 +109,31 @@
         cursor: pointer;
         display: none;
         box-shadow: 0 2px 6px rgba(0,0,0,0.15);
-    ">Suporte</button>
-<!-- New Sala de Troféus button (same style, different left position) -->
-<button id="clube-dos-13" style="
-    position: fixed;
-    top: 330px; left: 120px;
-    z-index: 10000;
-    font-size: 1.2em;
-    padding: 10px 18px;
-    border-radius: 8px;
-    background: #222; color: #fff;
-    border: none;
-    cursor: pointer;
-    display: none;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.15);
-">Troféus</button>
-<button id="pen-path-btn" style="
-    position: fixed;
-    top: 330px; left: 302px;
-    z-index: 10000;
-    font-size: 1.2em;
-    padding: 10px 18px;
-    border-radius: 8px;
-    background: #222; color: #fff;
-    border: none;
-    cursor: pointer;
-    display: none;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.15);
-">✎ Desenho Tático</button>
-<button id="ai-analise-btn" style="
-    position: fixed;
-    top: 330px; left: 120px;
-    z-index: 10000;
-    font-size: 1.2em;
-    padding: 10px 18px;
-    border-radius: 8px;
-    background: #33aaff; color: #fff;
-    border: none;
-    cursor: pointer;
-    display: none;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.15);
-">AI Análise</button>
-<canvas id="trace-canvas" width="600" height="300" style="
-    position:absolute;
-    left:20px; top:20px;
-    z-index: 10;
-    pointer-events: none;
-    border-radius:8px;
-    background:transparent;
-    display: block;
-"></canvas>
+    ">✎ Desenho Tático</button>
+    <button id="ai-analise-btn" style="
+        position: fixed;
+        top: 330px; left: 120px;
+        z-index: 10000;
+        font-size: 1.2em;
+        padding: 10px 18px;
+        border-radius: 8px;
+        background: #33aaff; color: #fff;
+        border: none;
+        cursor: pointer;
+        display: none;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+    ">AI Análise</button>
+    <canvas id="trace-canvas" width="600" height="300" style="
+        position:absolute;
+        left:20px; top:20px;
+        z-index: 10;
+        pointer-events: none;
+        border-radius:8px;
+        background:transparent;
+        display: block;
+    "></canvas>
 
   <script>
-    // Show/hide Sala de Troféus button on fullscreen change (just like Clube dos 13)
-    function updateButtonSalaTrofeus() {
-        const btn = document.getElementById('sala-trofeus-btn');
-        if (
-            document.fullscreenElement ||
-            document.webkitFullscreenElement ||
-            document.msFullscreenElement
-        ) {
-            btn.style.display = 'block';
-        } else {
-            btn.style.display = 'none';
-        }
-    }
-    document.addEventListener('fullscreenchange', updateButtonSalaTrofeus);
-    document.addEventListener('webkitfullscreenchange', updateButtonSalaTrofeus);
-    document.addEventListener('msfullscreenchange', updateButtonSalaTrofeus);
-
-    // (example action: open an alert, you can change this to show a modal, etc)
-    document.getElementById('sala-trofeus-btn').addEventListener('click', function() {
-        alert('Abrir I N V I C T O Zone!');
-        // You can replace the above with your modal or navigation logic
-    });
-    document.getElementById('sala-trofeus-btn').addEventListener('click', function() {
-        window.location.href = "https://wa.me/5519988108063";
-    });
-    // Show Clube dos 13 menu
-    document.getElementById('clube-dos-13').addEventListener('click', function(e) {
-        e.preventDefault();
-        document.getElementById('clube-menu-overlay').style.display = 'flex';
-    });
-
-    // Close Clube dos 13 menu
-    document.getElementById('close-clube-menu').addEventListener('click', function() {
-        document.getElementById('clube-menu-overlay').style.display = 'none';
-    });
-
-    // Optional: Hide menu if user clicks outside the menu box
-    document.getElementById('clube-menu-overlay').addEventListener('click', function(e) {
-        if (e.target === this) {
-            this.style.display = 'none';
-        }
-    }); 
         // Enter Fullscreen
         document.getElementById('fullscreen-overlay').addEventListener('click', async function() {
             const el = document.documentElement;
@@ -258,43 +170,8 @@
             }
         }
 
-        // Show/hide clube button on fullscreen change
-        function updateButtonClube() {
-            const btn = document.getElementById('clube-dos-13');
-            if (
-                document.fullscreenElement ||
-                document.gotoAndPlayClubeList
-            ) {
-                btn.style.display = 'block';
-            } else {
-                btn.style.display = 'none';
-            }
-        }
-
-        document.addEventListener('fullscreenchange', updateExitButton);
-        document.addEventListener('webkitfullscreenchange', updateExitButton);
-        document.addEventListener('msfullscreenchange', updateExitButton);
-        document.addEventListener('fullscreenchange', updateButtonClube);
-
         // Exit Fullscreen function
         document.getElementById('exit-fullscreen-btn').addEventListener('click', async function() {
-            if (document.exitFullscreen) {
-                await document.exitFullscreen();
-            } else if (document.webkitExitFullscreen) { /* Safari */
-                await document.webkitExitFullscreen();
-            } else if (document.msExitFullscreen) { /* IE11 */
-                await document.msExitFullscreen();
-            }
-            // Optionally unlock orientation if supported
-            if (screen.orientation && screen.orientation.unlock) {
-                try {
-                    await screen.orientation.unlock();
-                } catch (e) {}
-            }
-        });
-
-        // Clube function
-        document.getElementById('clube-dos-13').addEventListener('click', async function() {
             if (document.exitFullscreen) {
                 await document.exitFullscreen();
             } else if (document.webkitExitFullscreen) { /* Safari */
@@ -426,9 +303,6 @@
             btn.style.display = 'none';
         }
     }
-    document.addEventListener('fullscreenchange', updatePenPathButton);
-    document.addEventListener('webkitfullscreenchange', updatePenPathButton);
-    document.addEventListener('msfullscreenchange', updatePenPathButton);
 
     // Pen Path Drawing Logic
     let penMode = false;
@@ -565,9 +439,6 @@
             btn.style.display = 'none';
         }
     }
-    document.addEventListener('fullscreenchange', updateAIButton);
-    document.addEventListener('webkitfullscreenchange', updateAIButton);
-    document.addEventListener('msfullscreenchange', updateAIButton);
 
     // Helper: Get green team positions (circle2 to circle11)
     function getGreenTeamPositions() {
