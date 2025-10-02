@@ -139,64 +139,72 @@
     color:#fff; padding:18px 32px; border-radius:8px; z-index:10001;
     font-size:1.3em; box-shadow:0 2px 10px rgba(0,0,0,0.18);
 "></div>
-  <script>
+<script>
   // Enter Fullscreen
-        document.getElementById('fullscreen-overlay').addEventListener('click', async function() {
-            const el = document.documentElement;
-            // Try fullscreen
-            if (el.requestFullscreen) {
-                await el.requestFullscreen();
-            } else if (el.webkitRequestFullscreen) { /* Safari */
-                await el.webkitRequestFullscreen();
-            } else if (el.msRequestFullscreen) { /* IE11 */
-                await el.msRequestFullscreen();
-            }
-            // Attempt to lock orientation to landscape
-            if (screen.orientation && screen.orientation.lock) {
-                try {
-                    await screen.orientation.lock('landscape');
-                } catch (e) {
-                    // Some browsers might not support or allow it
-                }
-            }
-            document.getElementById('fullscreen-overlay').style.display = 'none';
-        });
+  document.getElementById('fullscreen-overlay').addEventListener('click', async function() {
+      const el = document.documentElement;
+      // Try fullscreen
+      if (el.requestFullscreen) {
+          await el.requestFullscreen();
+      } else if (el.webkitRequestFullscreen) { /* Safari */
+          await el.webkitRequestFullscreen();
+      } else if (el.msRequestFullscreen) { /* IE11 */
+          await el.msRequestFullscreen();
+      }
+      // Attempt to lock orientation to landscape
+      if (screen.orientation && screen.orientation.lock) {
+          try {
+              await screen.orientation.lock('landscape');
+          } catch (e) {
+              // Some browsers might not support or allow it
+          }
+      }
+      document.getElementById('fullscreen-overlay').style.display = 'none';
+      // Ensure buttons update after entering fullscreen
+      updateExitButton();
+      updatePenPathButton();
+      updateAIButton();
+  });
 
-        // Show/hide exit button on fullscreen change
-        function updateExitButton() {
-            const btn = document.getElementById('exit-fullscreen-btn');
-            if (
-                document.fullscreenElement ||
-                document.webkitFullscreenElement ||
-                document.msFullscreenElement
-            ) {
-                btn.style.display = 'block';
-            } else {
-                btn.style.display = 'none';
-            }
-        }
+  // Show/hide exit button on fullscreen change
+  function updateExitButton() {
+      const btn = document.getElementById('exit-fullscreen-btn');
+      if (
+          document.fullscreenElement ||
+          document.webkitFullscreenElement ||
+          document.msFullscreenElement
+      ) {
+          btn.style.display = 'block';
+      } else {
+          btn.style.display = 'none';
+      }
+  }
 
-        document.addEventListener('fullscreenchange', updateExitButton);
-        document.addEventListener('webkitfullscreenchange', updateExitButton);
-        document.addEventListener('msfullscreenchange', updateExitButton);
+  document.addEventListener('fullscreenchange', updateExitButton);
+  document.addEventListener('webkitfullscreenchange', updateExitButton);
+  document.addEventListener('msfullscreenchange', updateExitButton);
 
-        // Exit Fullscreen function
-        document.getElementById('exit-fullscreen-btn').addEventListener('click', async function() {
-            if (document.exitFullscreen) {
-                await document.exitFullscreen();
-            } else if (document.webkitExitFullscreen) { /* Safari */
-                await document.webkitExitFullscreen();
-            } else if (document.msExitFullscreen) { /* IE11 */
-                await document.msExitFullscreen();
-            }
-            // Optionally unlock orientation if supported
-            if (screen.orientation && screen.orientation.unlock) {
-                try {
-                    await screen.orientation.unlock();
-                } catch (e) {}
-            }
-        });
-    </script>
+  // Exit Fullscreen function
+  document.getElementById('exit-fullscreen-btn').addEventListener('click', async function() {
+      if (document.exitFullscreen) {
+          await document.exitFullscreen();
+      } else if (document.webkitExitFullscreen) { /* Safari */
+          await document.webkitExitFullscreen();
+      } else if (document.msExitFullscreen) { /* IE11 */
+          await document.msExitFullscreen();
+      }
+      // Optionally unlock orientation if supported
+      if (screen.orientation && screen.orientation.unlock) {
+          try {
+              await screen.orientation.unlock();
+          } catch (e) {}
+      }
+      // Ensure buttons update after exiting fullscreen
+      updateExitButton();
+      updatePenPathButton();
+      updateAIButton();
+  });
+</script>
     <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
     <script>
         const socket = io('https://mesatatica.onrender.com');
@@ -470,7 +478,6 @@
 
     // Helper: Update red team positions (circle13 to circle23)
     function setRedTeamPositions(arr) {
-        // arr: [{id: 13, left:..., top:...}, ...]
         for (const p of arr) {
             const el = document.getElementById('circle' + p.id);
             if (el) {
@@ -480,39 +487,51 @@
         }
     }
 
-
-function getBallPosition() {
-    const el = document.getElementById('circle24');
-    const left = parseInt(el.style.left || el.offsetLeft);
-    const top = parseInt(el.style.top || el.offsetTop);
-    return { left, top };
-}
-
-document.getElementById('ai-analise-btn').addEventListener('click', async function() {
-    const greenPositions = getGreenTeamPositions();
-    const ballPosition = getBallPosition();
-    // Show loading
-    this.textContent = "Analisando...";
-    this.disabled = true;
-    try {
-        const response = await fetch('/ai/analyze', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ green: greenPositions, ball: ballPosition })
-        });
-        const result = await response.json();
-        if (result.red && Array.isArray(result.red)) {
-            setRedTeamPositions(result.red);
-            alert("AI posicionou o time vermelho!");
-        } else {
-            alert("Erro na resposta da AI.");
-        }
-    } catch (e) {
-        alert("Falha na análise AI.");
+    function getBallPosition() {
+        const el = document.getElementById('circle24');
+        const left = parseInt(el.style.left || el.offsetLeft);
+        const top = parseInt(el.style.top || el.offsetTop);
+        return { left, top };
     }
-    this.textContent = "AI Análise";
-    this.disabled = false;
-});
+
+    // Custom notification (instead of alert)
+    function showAINotification(message) {
+        const notif = document.getElementById('ai-notification');
+        notif.textContent = message;
+        notif.style.display = 'block';
+        setTimeout(() => { notif.style.display = 'none'; }, 2200);
+    }
+
+    document.getElementById('ai-analise-btn').addEventListener('click', async function() {
+        const greenPositions = getGreenTeamPositions();
+        const ballPosition = getBallPosition();
+        // Show loading
+        this.textContent = "Analisando...";
+        this.disabled = true;
+        try {
+            const response = await fetch('/ai/analyze', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ green: greenPositions, ball: ballPosition })
+            });
+            const result = await response.json();
+            if (result.red && Array.isArray(result.red)) {
+                setRedTeamPositions(result.red);
+                showAINotification("AI posicionou o time vermelho!");
+            } else {
+                showAINotification("Erro na resposta da AI.");
+            }
+        } catch (e) {
+            showAINotification("Falha na análise AI.");
+        }
+        this.textContent = "AI Análise";
+        this.disabled = false;
+
+        // Ensure buttons are correct (optional, for robustness)
+        updateAIButton();
+        if (typeof updatePenPathButton === 'function') updatePenPathButton();
+        if (typeof updateExitButton === 'function') updateExitButton();
+    });
 </script>
 
 <img src="img/Guarani.png" alt="Guarani F.C." style="
