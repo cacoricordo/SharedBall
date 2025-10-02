@@ -293,6 +293,23 @@
     </script>
 
 <script>
+    // Show/hide Pen Path button on fullscreen change
+    function updatePenPathButton() {
+        const btn = document.getElementById('pen-path-btn');
+        if (
+            document.fullscreenElement ||
+            document.webkitFullscreenElement ||
+            document.msFullscreenElement
+        ) {
+            btn.style.display = 'block';
+        } else {
+            btn.style.display = 'none';
+        }
+    }
+    document.addEventListener('fullscreenchange', updatePenPathButton);
+    document.addEventListener('webkitfullscreenchange', updatePenPathButton);
+    document.addEventListener('msfullscreenchange', updatePenPathButton);
+
     // Pen Path Drawing Logic
     let penMode = false;
     const penBtn = document.getElementById('pen-path-btn');
