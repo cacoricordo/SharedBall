@@ -131,7 +131,14 @@
     background:transparent;
     display: block;
 "></canvas>
-
+<div id="ai-notification" style="
+    display:none;
+    position:fixed;
+    bottom:40px; left:50%; transform:translateX(-50%);
+    background:#33aaff;
+    color:#fff; padding:18px 32px; border-radius:8px; z-index:10001;
+    font-size:1.3em; box-shadow:0 2px 10px rgba(0,0,0,0.18);
+"></div>
   <script>
   // Enter Fullscreen
         document.getElementById('fullscreen-overlay').addEventListener('click', async function() {
@@ -474,30 +481,42 @@
     }
 
     // AI Button event
-    document.getElementById('ai-analise-btn').addEventListener('click', async function() {
-        const greenPositions = getGreenTeamPositions();
-        // Show loading
-        this.textContent = "Analisando...";
-        this.disabled = true;
-        try {
-            const response = await fetch('/ai/analyze', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ green: greenPositions })
-            });
-            const result = await response.json();
-            if (result.red && Array.isArray(result.red)) {
-                setRedTeamPositions(result.red);
-                alert("AI posicionou o time vermelho!");
-            } else {
-                alert("Erro na resposta da AI.");
-            }
-        } catch (e) {
-            alert("Falha na análise AI.");
+function showAINotification(message) {
+    const notif = document.getElementById('ai-notification');
+    notif.textContent = message;
+    notif.style.display = 'block';
+    setTimeout(() => { notif.style.display = 'none'; }, 2000);
+}
+
+document.getElementById('ai-analise-btn').addEventListener('click', async function() {
+    const greenPositions = getGreenTeamPositions();
+    const ballPosition = getBallPosition();
+    this.textContent = "Analisando...";
+    this.disabled = true;
+    try {
+        const response = await fetch('/ai/analyze', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ green: greenPositions, ball: ballPosition })
+        });
+        const result = await response.json();
+        if (result.red && Array.isArray(result.red)) {
+            setRedTeamPositions(result.red);
+            showAINotification("AI posicionou o time vermelho!");
+        } else {
+            showAINotification("Erro na resposta da AI.");
         }
-        this.textContent = "AI Análise";
-        this.disabled = false;
-    });
+    } catch (e) {
+        showAINotification("Falha na análise AI.");
+    }
+    this.textContent = "AI Análise";
+    this.disabled = false;
+
+    // Ensure buttons remain visible in fullscreen
+    updateAIButton();
+    updatePenPathButton();
+    updateExitButton();
+});
 
 function getBallPosition() {
     const el = document.getElementById('circle24');
@@ -521,14 +540,7 @@ document.getElementById('ai-analise-btn').addEventListener('click', async functi
         const result = await response.json();
         if (result.red && Array.isArray(result.red)) {
             setRedTeamPositions(result.red);
-            alert("AI posicionou o time vermelho!");
-        } else {
-            alert("Erro na resposta da AI.");
-        }
-    } catch (e) {
-        alert("Falha na análise AI.");
-    }
-    this.textContent = "AI Análise";
+        this.textContent = "AI Análise";
     this.disabled = false;
 });
 </script>
