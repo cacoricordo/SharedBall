@@ -480,43 +480,6 @@
         }
     }
 
-    // AI Button event
-function showAINotification(message) {
-    const notif = document.getElementById('ai-notification');
-    notif.textContent = message;
-    notif.style.display = 'block';
-    setTimeout(() => { notif.style.display = 'none'; }, 2000);
-}
-
-document.getElementById('ai-analise-btn').addEventListener('click', async function() {
-    const greenPositions = getGreenTeamPositions();
-    const ballPosition = getBallPosition();
-    this.textContent = "Analisando...";
-    this.disabled = true;
-    try {
-        const response = await fetch('/ai/analyze', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ green: greenPositions, ball: ballPosition })
-        });
-        const result = await response.json();
-        if (result.red && Array.isArray(result.red)) {
-            setRedTeamPositions(result.red);
-            showAINotification("AI posicionou o time vermelho!");
-        } else {
-            showAINotification("Erro na resposta da AI.");
-        }
-    } catch (e) {
-        showAINotification("Falha na análise AI.");
-    }
-    this.textContent = "AI Análise";
-    this.disabled = false;
-
-    // Ensure buttons remain visible in fullscreen
-    updateAIButton();
-    updatePenPathButton();
-    updateExitButton();
-});
 
 function getBallPosition() {
     const el = document.getElementById('circle24');
@@ -540,7 +503,14 @@ document.getElementById('ai-analise-btn').addEventListener('click', async functi
         const result = await response.json();
         if (result.red && Array.isArray(result.red)) {
             setRedTeamPositions(result.red);
-        this.textContent = "AI Análise";
+            alert("AI posicionou o time vermelho!");
+        } else {
+            alert("Erro na resposta da AI.");
+        }
+    } catch (e) {
+        alert("Falha na análise AI.");
+    }
+    this.textContent = "AI Análise";
     this.disabled = false;
 });
 </script>
