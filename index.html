@@ -303,6 +303,9 @@
             btn.style.display = 'none';
         }
     }
+    document.addEventListener('fullscreenchange', updatePenPathButton);
+    document.addEventListener('webkitfullscreenchange', updatePenPathButton);
+    document.addEventListener('msfullscreenchange', updatePenPathButton);
 
     // Pen Path Drawing Logic
     let penMode = false;
@@ -439,6 +442,9 @@
             btn.style.display = 'none';
         }
     }
+    document.addEventListener('fullscreenchange', updateAIButton);
+    document.addEventListener('webkitfullscreenchange', updateAIButton);
+    document.addEventListener('msfullscreenchange', updateAIButton);
 
     // Helper: Get green team positions (circle2 to circle11)
     function getGreenTeamPositions() {
